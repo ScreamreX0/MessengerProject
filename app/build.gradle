@@ -1,9 +1,10 @@
 plugins {
     id 'com.android.application'
+    id 'com.google.gms.google-services'
 }
 
 android {
-    compileSdk 32
+    compileSdk 31
 
     defaultConfig {
         applicationId "com.example.messengerproject"
@@ -26,6 +27,8 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 }
+
+//apply plugin: 'com.google.gms.google-services'
 
 dependencies {
     implementation platform('com.google.firebase:firebase-bom:30.0.1')
