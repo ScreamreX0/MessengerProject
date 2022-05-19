@@ -17,6 +17,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.d(DEBUG_CODE, mAuth.getCurrentUser().getPhoneNumber());
+        Log.d(DEBUG_CODE, "\nCurrent user=" + mAuth.getCurrentUser().getPhoneNumber());
     }
 }
