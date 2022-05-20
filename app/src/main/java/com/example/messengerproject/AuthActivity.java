@@ -1,20 +1,18 @@
 package com.example.messengerproject;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.bluetooth.BluetoothClass;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.FirebaseException;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthOptions;
@@ -24,16 +22,17 @@ import java.util.concurrent.TimeUnit;
 
 public class AuthActivity extends AppCompatActivity {
     // Elements
-    private EditText mPhoneNumber;
-    private Button mSendCode;
-    private EditText mCode;
-    private Button mEnterButton;
+    private EditText mPhoneNumberTextView;
+    private Button mGetCodeButton;
+    private EditText mCodeTextView;
+    private Button mSendCodeButton;
 
     // Firebase
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallBack;
     private static final String DEBUG_CODE = "Auth";
-    private String verificationCodeBySystem;
+    private String userId;
+    private final long codeTimeout = 30L;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,64 +40,67 @@ public class AuthActivity extends AppCompatActivity {
         setContentView(R.layout.activity_auth);
         init();
 
+        authWithTestPhoneNumber();
+
         mCallBack = getCallBack();
 
-        mSendCode.setOnClickListener(v -> {
-            if (mPhoneNumber.getText().length() != 11) {
-                Toast.makeText(AuthActivity.this, "Неверный формат номера телефона", Toast.LENGTH_SHORT).show();
+        mGetCodeButton.setOnClickListener(v -> {
+            sendVerificationCode(mPhoneNumberTextView.getText().toString());
+        });
+
+        mSendCodeButton.setOnClickListener(v -> {
+            if (userId == null) {
                 return;
             }
 
-            sendVerificationCode("+" + mPhoneNumber.getText().toString());
-        });
-
-        mEnterButton.setOnClickListener(v -> {
-            if (mCode.getText().toString().length() < 6) {
+            if (mCodeTextView.getText().toString().length() < 6) {
                 return;
             }
 
-            verifyCode(mCode.getText().toString());
-//            String code = phoneAuthCredential.getSmsCode();
-//
-//            if (code.isEmpty() || code.length() < 6) {
-//                Log.d(DEBUG_CODE, "\nError:" + "Неверный код");
-//                Toast.makeText(AuthActivity.this, "Неверный код", Toast.LENGTH_SHORT).show();
-//                return;
-//            }
-//            verifyCode(code);
+            String code = mCodeTextView.getText().toString();
+
+            if (code.isEmpty() || code.length() < 6) {
+                Log.d(DEBUG_CODE, "\nError:" + "Неверный код");
+                Toast.makeText(AuthActivity.this, "Неверный код", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            verifyCode(code, userId);
         });
-
-
     }
 
     // Метод инициализации
     private void init() {
-        mPhoneNumber = findViewById(R.id.a_auth_phone_number);
-        mSendCode = findViewById(R.id.a_auth_send_code);
-        mCode = findViewById(R.id.a_auth_code);
-        mEnterButton = findViewById(R.id.a_auth_enter_button);
+        mPhoneNumberTextView = findViewById(R.id.a_auth_phone_number);
+        mGetCodeButton = findViewById(R.id.a_auth_get_code);
+        mCodeTextView = findViewById(R.id.a_auth_code);
+        mSendCodeButton = findViewById(R.id.a_auth_send_code);
     }
 
     // Метод для получения настроек отправки кода
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks getCallBack() {
         return new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+            // Отправка кода
             @Override
             public void onCodeSent(@NonNull String id, @NonNull PhoneAuthProvider.ForceResendingToken token) {
                 super.onCodeSent(id, token);
 
-                verificationCodeBySystem = id;
+                mGetCodeButton.setEnabled(false);
 
-                Log.d(DEBUG_CODE, "\nid=" + id + "\ntoken=" + token);
+                userId = id;
+
+                startTimer();
             }
 
+            // Код успешно отправлен
             @Override
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
-                AuthActivity.this.verificationCodeBySystem = phoneAuthCredential.getSmsCode();
+                startActivity(new Intent(AuthActivity.this, MainActivity.class));
             }
 
+            // Ошибка отправки кода
             @Override
             public void onVerificationFailed(@NonNull FirebaseException e) {
-                Toast.makeText(AuthActivity.this, "Ошибка верификации", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AuthActivity.this, "Неверный номер телефона", Toast.LENGTH_SHORT).show();
                 Log.d(DEBUG_CODE, "Error: " + e.getMessage());
             }
         };
@@ -108,7 +110,7 @@ public class AuthActivity extends AppCompatActivity {
     private void sendVerificationCode(String number) {
         PhoneAuthOptions options = PhoneAuthOptions.newBuilder(mAuth)
                 .setPhoneNumber(number)
-                .setTimeout(60L, TimeUnit.SECONDS)
+                .setTimeout(codeTimeout, TimeUnit.SECONDS)
                 .setActivity(this)
                 .setCallbacks(mCallBack)
                 .build();
@@ -117,24 +119,74 @@ public class AuthActivity extends AppCompatActivity {
     }
 
     // Метод для верификации с кодом
-    private void verifyCode(String codeByUser) {
-        if (verificationCodeBySystem == null) {
-            return;
-        }
-
-        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationCodeBySystem, codeByUser);
+    private void verifyCode(String codeByUser, String verificationId) {
+        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, codeByUser);
 
         mAuth.signInWithCredential(credential).addOnCompleteListener(runnable -> {
             if (!runnable.isSuccessful()) {
-                Log.d(DEBUG_CODE, String.valueOf(runnable.getException()));
+                Toast.makeText(AuthActivity.this, "Неверный код", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            String code = credential.getSmsCode();
-
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
         });
+    }
+
+    // Метод для отключения кнопки повторной отправки кода и запуск таймера
+    private void startTimer() {
+        CountDownTimer timer = new CountDownTimer(codeTimeout * 1000, 1000) {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onTick(long l) {
+                mGetCodeButton.setText("Получить код (" + (l / 1000) + " сек)");
+            }
+
+            @Override
+            public void onFinish() {
+                mGetCodeButton.setText("Получить код");
+                mGetCodeButton.setEnabled(true);
+            }
+        };
+
+        timer.start();
+    }
+
+    // TODO: Убрать на проде
+    private void authWithTestPhoneNumber() {
+        PhoneAuthProvider.OnVerificationStateChangedCallbacks callback = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+            @Override
+            public void onCodeSent(@NonNull String id, @NonNull PhoneAuthProvider.ForceResendingToken token) {
+                super.onCodeSent(id, token);
+
+                PhoneAuthCredential credential = PhoneAuthProvider.getCredential(id, "123456");
+
+                mAuth.signInWithCredential(credential).addOnCompleteListener(runnable -> {
+                    if (!runnable.isSuccessful()) {
+                        Toast.makeText(AuthActivity.this, "Неверный код", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                });
+            }
+            @Override
+            public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
+
+            }
+            @Override
+            public void onVerificationFailed(@NonNull FirebaseException e) {
+                Toast.makeText(AuthActivity.this, "Неверный номер телефона", Toast.LENGTH_SHORT).show();
+                Log.d(DEBUG_CODE, "Error: " + e.getMessage());
+            }
+        };
+
+        PhoneAuthOptions options = PhoneAuthOptions.newBuilder(mAuth)
+                .setPhoneNumber("+79274304923")
+                .setTimeout(10L, TimeUnit.SECONDS)
+                .setActivity(this)
+                .setCallbacks(callback)
+                .build();
+
+        PhoneAuthProvider.verifyPhoneNumber(options);
     }
 }
