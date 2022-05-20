@@ -1,24 +1,27 @@
-package com.example.messengerproject;
+package com.example.messengerproject.activities;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SearchView;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.messengerproject.R;
+import com.example.messengerproject.adapters.MainMenuViewPagerAdapter;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
@@ -34,12 +37,15 @@ public class MainActivity extends AppCompatActivity {
     private AppBarLayout mAppBar;
     private SearchView mSearchView;
     private ImageView mMainMenuButton;
-    private RecyclerView mRecycleView;
     private NavigationView mNavigationView;
     private View mHeaderMenu;
     private ImageView mProfileImage;
     private TextView mProfileName;
     private TabLayout mTabLayout;
+
+    // View pager
+    private ViewPager2 mViewPager;
+    private FragmentStateAdapter fragmentStateAdapter;
 
     // Drawer menu
     private int mCreateGroup;
@@ -54,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         init();
+
 
         mProfileName.setText(mAuth.getCurrentUser().getPhoneNumber());
 
@@ -85,11 +92,25 @@ public class MainActivity extends AppCompatActivity {
         mAppBar = findViewById(R.id.a_main_app_bar);
         mSearchView = findViewById(R.id.a_main_search_view);
         mMainMenuButton = findViewById(R.id.a_main_menu);
-        mRecycleView = findViewById(R.id.a_main_recycle_view);
         mNavigationView = findViewById(R.id.a_main_navigation_view);
 
         // Tab
         mTabLayout = findViewById(R.id.a_main_tab);
+
+        // View pager
+        mViewPager = findViewById(R.id.a_main_view_pager);
+        fragmentStateAdapter = new MainMenuViewPagerAdapter(this);
+        mViewPager.setAdapter(fragmentStateAdapter);
+        new TabLayoutMediator(mTabLayout, mViewPager, (tab, position) -> {
+            tab.setId(position);
+            if (position == 0) {
+                tab.setText("Все");
+            } else if (position == 1) {
+                tab.setText("Диалоги");
+            } else if (position == 2) {
+                tab.setText("Группы");
+            }
+        }).attach();
 
         // Drawer header
         mHeaderMenu = mNavigationView.getHeaderView(0);

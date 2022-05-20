@@ -4,9 +4,13 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/layout/activity_auth.xml" value="0.3880208333333333" />
-        <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/layout/activity_main.xml" value="0.33" />
+        <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/layout/activity_main.xml" value="0.3510506798516687" />
         <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/layout/activity_splash.xml" value="0.2637889688249401" />
+        <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/layout/fragment_all_conversations.xml" value="0.2001585414189457" />
+        <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/layout/fragment_dialogs.xml" value="0.18945699564011098" />
+        <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/layout/fragment_groups.xml" value="0.2001585414189457" />
         <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/layout/header_menu.xml" value="0.22" />
+        <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/layout/item_main_menu_view_pager.xml" value="0.2001585414189457" />
         <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/menu/drawer_menu.xml" value="0.21302083333333333" />
         <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/menu/menu_drawer.xml" value="0.25" />
         <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1005" />

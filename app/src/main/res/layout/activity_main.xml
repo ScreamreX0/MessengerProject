@@ -5,16 +5,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".activities.MainActivity">
 
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/a_main_navigation_view"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        app:headerLayout="@layout/header_menu"
-        app:menu="@menu/menu_drawer"
-        android:fitsSystemWindows="true"
-        android:layout_gravity="start"/>
+
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -45,8 +38,8 @@
 
                 <ImageView
                     android:id="@+id/a_main_menu"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="33dp"
+                    android:layout_height="39dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/a_main_search_view"
                     app:layout_constraintStart_toStartOf="parent"
@@ -68,34 +61,23 @@
             android:id="@+id/a_main_tab"
             android:layout_width="match_parent"
             android:layout_height="40dp">
-
-            <com.google.android.material.tabs.TabItem
-                android:id="@+id/a_main_tab_all_items"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:text="Все"/>
-
-            <com.google.android.material.tabs.TabItem
-                android:id="@+id/a_main_tab_dialogs"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:text="Диалоги"/>
-
-            <com.google.android.material.tabs.TabItem
-                android:id="@+id/a_main_tab_groups"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:text="Группы"/>
-
         </com.google.android.material.tabs.TabLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/a_main_recycle_view"
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/a_main_view_pager"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="120dp"/>
-
+            android:layout_height="match_parent">
+        </androidx.viewpager2.widget.ViewPager2>
     </LinearLayout>
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/a_main_navigation_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        app:headerLayout="@layout/header_menu"
+        app:menu="@menu/menu_drawer"
+        android:fitsSystemWindows="true"
+        android:layout_gravity="start"/>
 
 
 </androidx.drawerlayout.widget.DrawerLayout>

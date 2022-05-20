@@ -1,19 +1,14 @@
-package com.example.messengerproject;
+package com.example.messengerproject.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.widget.ProgressBar;
+
+import com.example.messengerproject.R;
 
 public class SplashActivity extends AppCompatActivity {
     private static final String DEBUG_CODE = "Splash";
