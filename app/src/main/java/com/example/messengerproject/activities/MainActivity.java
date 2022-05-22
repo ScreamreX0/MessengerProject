@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
 
         init();
 
-
         mProfileName.setText(mAuth.getCurrentUser().getPhoneNumber());
 
         mMainMenuButton.setOnClickListener(view -> {
