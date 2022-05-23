@@ -64,6 +64,10 @@ public class ConversationsHelper {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 conversationsReference.get().addOnSuccessListener(runnable -> {
+                    if (!runnable.hasChildren()) {
+                        return;
+                    }
+
                     for (DataSnapshot userConversationSnapshot : snapshot.getChildren()) {
                         for (DataSnapshot conversationSnapshot : runnable.getChildren()) {
                             if (userConversationSnapshot.getKey().equals(conversationSnapshot.getKey())) {

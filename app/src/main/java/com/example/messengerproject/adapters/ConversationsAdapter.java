@@ -1,6 +1,8 @@
 package com.example.messengerproject.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.telecom.Call;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -13,12 +15,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.messengerproject.Items;
 import com.example.messengerproject.R;
+import com.example.messengerproject.activities.ConversationActivity;
 
 import java.util.ArrayList;
 
 public class ConversationsAdapter extends RecyclerView.Adapter<ConversationsAdapter.ConversationViewHolder> {
     private final Context context;
     private final ArrayList<Items.Conversation> conversations;
+    public final static String CONVERSATION_ID = "ConversationId";
 
     public ConversationsAdapter(Context context, ArrayList<Items.Conversation> conversations) {
         this.context = context;
@@ -39,7 +43,9 @@ public class ConversationsAdapter extends RecyclerView.Adapter<ConversationsAdap
         holder.name.setText(conversation.getName());
 
         holder.itemView.setOnClickListener(view -> {
-
+            Intent intent = new Intent(context, ConversationActivity.class);
+            intent.putExtra(CONVERSATION_ID, conversation.getId());
+            context.startActivity(intent);
         });
     }
 
@@ -48,13 +54,12 @@ public class ConversationsAdapter extends RecyclerView.Adapter<ConversationsAdap
         return conversations.size();
     }
 
-    public class ConversationViewHolder extends RecyclerView.ViewHolder {
+    public static class ConversationViewHolder extends RecyclerView.ViewHolder {
         TextView name;
         
         public ConversationViewHolder(@NonNull View itemView) {
             super(itemView);
             init();
-
         }
 
         private void init() {

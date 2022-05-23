@@ -1,5 +1,6 @@
 package com.example.messengerproject;
 
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -20,6 +21,10 @@ public class Items {
             this.name = name;
             this.members = members;
             this.messages = messages;
+        }
+
+        public String getId() {
+            return id;
         }
 
         public String getName() {
@@ -48,14 +53,41 @@ public class Items {
     public static class Message {
         String name;
         String senderPhone;
-        LocalDateTime messageTime;
+        String messageTime;
         MessagesHelper.MessageType type;
+        String text;
+        URI image;
 
-        public Message(String name, String senderPhone, LocalDateTime messageTime, MessagesHelper.MessageType type) {
+        public Message(String name,
+                       String senderPhone,
+                       String messageTime,
+                       MessagesHelper.MessageType type,
+                       String text) {
             this.name = name;
             this.senderPhone = senderPhone;
             this.messageTime = messageTime;
             this.type = type;
+            this.text = text;
+        }
+
+        public Message(String name,
+                       String senderPhone,
+                       String messageTime,
+                       MessagesHelper.MessageType type,
+                       URI uri) {
+            this.name = name;
+            this.senderPhone = senderPhone;
+            this.messageTime = messageTime;
+            this.type = type;
+            this.image = uri;
+        }
+
+        public String getText() {
+            return text;
+        }
+
+        public URI getImage() {
+            return image;
         }
 
         public String getName() {
@@ -66,7 +98,7 @@ public class Items {
             return senderPhone;
         }
 
-        public LocalDateTime getMessageTime() {
+        public String getMessageTime() {
             return messageTime;
         }
 
