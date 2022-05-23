@@ -19,13 +19,16 @@ public class MessagesHelper {
     Context context;
     RecyclerView messagesRecycleView;
     DatabaseReference messagesReference;
+    ArrayList<Items.Message> messages;
 
     public MessagesHelper(Context context,
                           RecyclerView messagesRecycleView,
-                          DatabaseReference messagesReference) {
+                          DatabaseReference messagesReference,
+                          ArrayList<Items.Message> messages) {
         this.context = context;
         this.messagesRecycleView = messagesRecycleView;
         this.messagesReference = messagesReference;
+        this.messages = messages;
     }
 
     // Тип сообщения
@@ -36,17 +39,21 @@ public class MessagesHelper {
 
     // Метод для вывода сообщений
     public void displayMessages() {
-        ArrayList<Items.Message> messages = new ArrayList<>();
         MessagesAdapter messagesAdapter = new MessagesAdapter(context, messages);
         messagesRecycleView.setHasFixedSize(true);
         messagesRecycleView.setLayoutManager(new LinearLayoutManager(context));
         messagesRecycleView.setAdapter(messagesAdapter);
 
-        System.out.println("hello wolrd");
-
         messagesReference.removeEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                messages.clear();
+
+                if (snapshot.getChildrenCount() == 0) {
+                    messagesAdapter.notifyDataSetChanged();
+                    return;
+                }
+
                 for (DataSnapshot messagesSnapshot : snapshot.getChildren()) {
                     messages.add(new Items.Message(
                             messagesSnapshot.getKey(),
@@ -57,6 +64,7 @@ public class MessagesHelper {
                 }
 
                 messagesAdapter.notifyDataSetChanged();
+                messagesRecycleView.smoothScrollToPosition(messages.size() - 1);
             }
 
             @Override
@@ -68,6 +76,13 @@ public class MessagesHelper {
         messagesReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                messages.clear();
+
+                if (snapshot.getChildrenCount() == 0) {
+                    messagesAdapter.notifyDataSetChanged();
+                    return;
+                }
+
                 for (DataSnapshot messagesSnapshot : snapshot.getChildren()) {
                     messages.add(new Items.Message(
                             messagesSnapshot.getKey(),
@@ -77,6 +92,7 @@ public class MessagesHelper {
                             messagesSnapshot.child("Message").getValue().toString()));
                 }
                 messagesAdapter.notifyDataSetChanged();
+                messagesRecycleView.smoothScrollToPosition(messages.size() - 1);
             }
 
             @Override

@@ -30,10 +30,10 @@ public class AuthActivity extends AppCompatActivity {
 
     // Firebase
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallBack;
+    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallBack;  // Настройки
     private static final String DEBUG_CODE = "Auth";
-    private String userId;
-    private final long codeTimeout = 30L;
+    private String userId;  // id пользователя при отправке кода на телефон (id номера телефона)
+    private final long codeTimeout = 60L;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,30 +41,36 @@ public class AuthActivity extends AppCompatActivity {
         setContentView(R.layout.activity_auth);
         init();
 
+        // Попытка авторизации с помощью тестового телефонного номера
+        // TODO: Убрать на проде
         authWithTestPhoneNumber();
 
+        // Получение настроек
         mCallBack = getCallBack();
 
+        // Слушатель нажатия на кнопку получения кода
         mGetCodeButton.setOnClickListener(v -> {
+            // Метод для отправки кода верификации
             sendVerificationCode(mPhoneNumberTextView.getText().toString());
         });
 
+        // Метод для отправки проверочного кода
         mSendCodeButton.setOnClickListener(v -> {
             if (userId == null) {
+                // Пользователь не отправлял код на свой номер телефона
                 return;
             }
 
             if (mCodeTextView.getText().toString().length() < 6) {
-                return;
-            }
-
-            String code = mCodeTextView.getText().toString();
-
-            if (code.isEmpty() || code.length() < 6) {
+                // Пользователь ввел меньше 6 символов кода
                 Log.d(DEBUG_CODE, "\nError:" + "Неверный код");
                 Toast.makeText(AuthActivity.this, "Неверный код", Toast.LENGTH_SHORT).show();
                 return;
             }
+
+            // Код который ввел пользователь
+            String code = mCodeTextView.getText().toString();
+
             verifyCode(code, userId);
         });
     }
@@ -85,10 +91,10 @@ public class AuthActivity extends AppCompatActivity {
             public void onCodeSent(@NonNull String id, @NonNull PhoneAuthProvider.ForceResendingToken token) {
                 super.onCodeSent(id, token);
 
+                // Отключение кнопки отправки кода
                 mGetCodeButton.setEnabled(false);
 
                 userId = id;
-
                 startTimer();
             }
 
