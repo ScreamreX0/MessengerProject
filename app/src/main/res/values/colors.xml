@@ -8,5 +8,11 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="blue">#04B0E1</color>
-    <color name="grey">#707070</color>
+    <color name="grey">#BEBEBE</color>
+    
+    <color name="first">#13333E</color>
+    <color name="second">#2B424A</color>
+    <color name="third">#455768</color>
+    <color name="fourth">#6E7A8A</color>
+    <color name="fifth">#ADA3AF</color>
 </resources>

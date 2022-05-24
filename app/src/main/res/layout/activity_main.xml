@@ -40,6 +40,7 @@
                     android:id="@+id/a_main_menu"
                     android:layout_width="33dp"
                     android:layout_height="39dp"
+                    android:tint="@color/white"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/a_main_search_view"
                     app:layout_constraintStart_toStartOf="parent"

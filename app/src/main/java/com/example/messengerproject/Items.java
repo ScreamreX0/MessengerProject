@@ -10,17 +10,19 @@ public class Items {
         String name;
         ArrayList<DialogMember> members;
         ArrayList<Message> messages;
+        ConversationsHelper.ConversationType conversationType;
 
         public Conversation(String id, String name) {
             this.id = id;
             this.name = name;
         }
 
-        public Conversation(String id, String name, ArrayList<DialogMember> members, ArrayList<Message> messages) {
-            this.id = id;
-            this.name = name;
-            this.members = members;
-            this.messages = messages;
+        public ConversationsHelper.ConversationType getConversationType() {
+            return conversationType;
+        }
+
+        public void setConversationType(ConversationsHelper.ConversationType conversationType) {
+            this.conversationType = conversationType;
         }
 
         public String getId() {
@@ -57,6 +59,7 @@ public class Items {
         MessagesHelper.MessageType type;
         String text;
         URI image;
+        boolean isSelected = false;
 
         public Message(String name,
                        String senderPhone,
@@ -82,6 +85,18 @@ public class Items {
             this.image = uri;
         }
 
+        public boolean isSelected() {
+            return isSelected;
+        }
+
+        public void setSelected(boolean selected) {
+            isSelected = selected;
+        }
+
+        public void setText(String text) {
+            this.text = text;
+        }
+
         public String getText() {
             return text;
         }
@@ -104,6 +119,23 @@ public class Items {
 
         public MessagesHelper.MessageType getType() {
             return type;
+        }
+    }
+    public static class Contact {
+        String phoneNumber;
+        String name;
+
+        public Contact(String phoneNumber, String name) {
+            this.phoneNumber = phoneNumber;
+            this.name = name;
+        }
+
+        public String getPhoneNumber() {
+            return phoneNumber;
+        }
+
+        public String getName() {
+            return name;
         }
     }
 }

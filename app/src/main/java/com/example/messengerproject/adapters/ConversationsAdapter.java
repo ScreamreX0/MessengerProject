@@ -2,10 +2,7 @@ package com.example.messengerproject.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.telecom.Call;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -13,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.messengerproject.ConversationsHelper;
 import com.example.messengerproject.Items;
 import com.example.messengerproject.R;
 import com.example.messengerproject.activities.ConversationActivity;
@@ -22,7 +20,8 @@ import java.util.ArrayList;
 public class ConversationsAdapter extends RecyclerView.Adapter<ConversationsAdapter.ConversationViewHolder> {
     private final Context context;
     private final ArrayList<Items.Conversation> conversations;
-    public final static String CONVERSATION_ID = "ConversationId";
+    public final static String CONVERSATION_ID_KEY = "ConversationId";
+    public final static String CONVERSATION_NAME_KEY = "ConversationName";
 
     public ConversationsAdapter(Context context, ArrayList<Items.Conversation> conversations) {
         this.context = context;
@@ -44,7 +43,8 @@ public class ConversationsAdapter extends RecyclerView.Adapter<ConversationsAdap
 
         holder.itemView.setOnClickListener(view -> {
             Intent intent = new Intent(context, ConversationActivity.class);
-            intent.putExtra(CONVERSATION_ID, conversation.getId());
+            intent.putExtra(CONVERSATION_ID_KEY, conversation.getId());
+            intent.putExtra(CONVERSATION_NAME_KEY, conversation.getName());
             context.startActivity(intent);
         });
     }

@@ -1,8 +1,10 @@
 package com.example.messengerproject;
 
 import android.content.Context;
+import android.widget.Toolbar;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,15 +22,19 @@ public class MessagesHelper {
     RecyclerView messagesRecycleView;
     DatabaseReference messagesReference;
     ArrayList<Items.Message> messages;
+    androidx.appcompat.widget.Toolbar toolBar;
+    MessagesAdapter messagesAdapter;
 
-    public MessagesHelper(Context context,
-                          RecyclerView messagesRecycleView,
+    public MessagesHelper(Context applicationContext,
+                          RecyclerView mMessagesRecycleView,
                           DatabaseReference messagesReference,
-                          ArrayList<Items.Message> messages) {
-        this.context = context;
-        this.messagesRecycleView = messagesRecycleView;
+                          ArrayList<Items.Message> messages,
+                          androidx.appcompat.widget.Toolbar mToolBar) {
+        this.context = applicationContext;
+        this.messagesRecycleView = mMessagesRecycleView;
         this.messagesReference = messagesReference;
         this.messages = messages;
+        this.toolBar = mToolBar;
     }
 
     // Тип сообщения
@@ -39,10 +45,10 @@ public class MessagesHelper {
 
     // Метод для вывода сообщений
     public void displayMessages() {
-        MessagesAdapter messagesAdapter = new MessagesAdapter(context, messages);
-        messagesRecycleView.setHasFixedSize(true);
-        messagesRecycleView.setLayoutManager(new LinearLayoutManager(context));
-        messagesRecycleView.setAdapter(messagesAdapter);
+        this.messagesAdapter = getMessagesAdapter();
+        this.messagesRecycleView = getMessagesRecycleView(this.messagesRecycleView);
+
+
 
         messagesReference.removeEventListener(new ValueEventListener() {
             @Override
@@ -100,5 +106,18 @@ public class MessagesHelper {
 
             }
         });
+    }
+
+    private MessagesAdapter getMessagesAdapter() {
+        return new MessagesAdapter(context, messages, messagesReference, toolBar);
+
+    }
+
+    private RecyclerView getMessagesRecycleView(RecyclerView recyclerView) {
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        recyclerView.setAdapter(messagesAdapter);
+
+        return recyclerView;
     }
 }

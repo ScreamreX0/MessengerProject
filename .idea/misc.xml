@@ -3,17 +3,34 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/drawable/background_message.xml" value="0.227" />
+        <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/drawable/background_recieved_message.xml" value="0.227" />
+        <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/drawable/background_send_button.xml" value="0.227" />
+        <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/drawable/background_send_message.xml" value="0.227" />
+        <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/drawable/ic_baseline_delete_24.xml" value="0.1275" />
+        <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/drawable/ic_baseline_edit_24.xml" value="0.1275" />
+        <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/drawable/inset_message_background.xml" value="0.227" />
+        <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/layout-v26/header_menu.xml" value="0.2722222222222222" />
+        <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/layout/activity_add_contact.xml" value="0.2546875" />
         <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/layout/activity_auth.xml" value="0.3880208333333333" />
-        <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/layout/activity_conversation.xml" value="0.3425925925925926" />
+        <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/layout/activity_contacts.xml" value="0.2722222222222222" />
+        <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/layout/activity_conversation.xml" value="0.25" />
         <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/layout/activity_main.xml" value="0.3510506798516687" />
         <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/layout/activity_splash.xml" value="0.2637889688249401" />
+        <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/layout/dialog_add_contact.xml" value="0.2677083333333333" />
+        <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/layout/dialog_change_message.xml" value="0.3212962962962963" />
         <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/layout/fragment_all_conversations.xml" value="0.2001585414189457" />
+        <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/layout/fragment_contacts.xml" value="0.30277777777777776" />
         <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/layout/fragment_dialogs.xml" value="0.33" />
+        <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/layout/fragment_edit_name.xml" value="0.2722222222222222" />
+        <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/layout/fragment_empty_contacts.xml" value="0.30277777777777776" />
         <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/layout/fragment_groups.xml" value="0.2001585414189457" />
-        <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/layout/header_menu.xml" value="0.22" />
+        <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/layout/header_menu.xml" value="0.33" />
         <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/layout/item_conversation.xml" value="0.1724137931034483" />
         <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/layout/item_main_menu_view_pager.xml" value="0.2001585414189457" />
         <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/layout/item_message.xml" value="0.3425925925925926" />
+        <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/layout/item_recieved_message.xml" value="0.33" />
+        <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/layout/item_send_message.xml" value="0.5" />
         <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/menu/drawer_menu.xml" value="0.21302083333333333" />
         <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/menu/menu_conversation.xml" value="0.3425925925925926" />
         <entry key="..\:/Android/projects/MessengerProject/app/src/main/res/menu/menu_drawer.xml" value="0.25" />
@@ -30,7 +47,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="11" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

@@ -2,11 +2,10 @@ package com.example.messengerproject.activities;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SearchView;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -18,19 +17,23 @@ import android.widget.TextView;
 
 import com.example.messengerproject.R;
 import com.example.messengerproject.adapters.MainMenuViewPagerAdapter;
+import com.example.messengerproject.fragments.EditNameFragment;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String DEBUG_CODE = "Main";
     private ActionBarDrawerToggle drawerToggle;
+    public static final int NICKNAME_MAX_SIZE = 20;
 
     // Firebase
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseDatabase mFirebaseDatabase = FirebaseDatabase.getInstance();
 
     // Elements
     private DrawerLayout mDrawer;
@@ -61,7 +64,18 @@ public class MainActivity extends AppCompatActivity {
 
         init();
 
-        mProfileName.setText(mAuth.getCurrentUser().getPhoneNumber());
+        mFirebaseDatabase
+                .getReference("Users/" + mAuth.getCurrentUser().getPhoneNumber() + "/Name")
+                .get()
+                .addOnSuccessListener(runnable -> {
+                    if (runnable == null || runnable.getValue().toString().equals("")) {
+                        mProfileName.setText(mAuth.getCurrentUser().getPhoneNumber());
+                        return;
+                    }
+                    mProfileName.setText(runnable.getValue().toString());
+        });
+
+
 
         mMainMenuButton.setOnClickListener(view -> {
             mDrawer.open();
@@ -71,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
             if (item.getItemId() == mCreateGroup) {
 
             } else if (item.getItemId() == mContacts) {
-
+                startActivity(new Intent(this, ContactsActivity.class));
             } else if (item.getItemId() == mSettings) {
 
             } else if (item.getItemId() == mAbout) {
@@ -82,6 +96,14 @@ public class MainActivity extends AppCompatActivity {
             }
 
             return true;
+        });
+
+        mProfileName.setOnClickListener(view -> {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            EditNameFragment editNameFragment = new EditNameFragment(this, mProfileName);
+            fragmentTransaction.add(editNameFragment, "");
+            fragmentTransaction.commit();
         });
     }
 

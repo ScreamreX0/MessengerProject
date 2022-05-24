@@ -1,5 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/m_conversation_edit"
+        android:title=""
+        android:icon="@drawable/ic_baseline_edit_24"
+        android:iconTint="@color/white"
+        app:showAsAction="ifRoom"
+        android:visible="false"/>
+    <item
+        android:id="@+id/m_conversation_delete"
+        android:title=""
+        android:icon="@drawable/ic_baseline_delete_24"
+        android:iconTint="@color/white"
+        app:showAsAction="ifRoom"
+        android:visible="false"/>
+
     <item android:id="@+id/m_conversation_clear"
         android:title="Очистить историю"
         android:icon="@drawable/ic_baseline_clear_24" />
