@@ -3,6 +3,7 @@ package com.example.messengerproject.activities;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -45,13 +46,13 @@ public class MainActivity extends AppCompatActivity {
     private ImageView mProfileImage;
     private TextView mProfileName;
     private TabLayout mTabLayout;
+    private Toolbar mToolbar;
 
     // View pager
     private ViewPager2 mViewPager;
     private FragmentStateAdapter fragmentStateAdapter;
 
     // Drawer menu
-    private int mCreateGroup;
     private int mContacts;
     private int mSettings;
     private int mAbout;
@@ -75,16 +76,20 @@ public class MainActivity extends AppCompatActivity {
                     mProfileName.setText(runnable.getValue().toString());
         });
 
+        mToolbar.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == R.id.m_main_add_conversation) {
+                startActivity(new Intent(this, AddConversationActivity.class));
+            }
 
+            return false;
+        });
 
         mMainMenuButton.setOnClickListener(view -> {
             mDrawer.open();
         });
 
         mNavigationView.setNavigationItemSelectedListener(item -> {
-            if (item.getItemId() == mCreateGroup) {
-
-            } else if (item.getItemId() == mContacts) {
+            if (item.getItemId() == mContacts) {
                 startActivity(new Intent(this, ContactsActivity.class));
             } else if (item.getItemId() == mSettings) {
 
@@ -105,6 +110,8 @@ public class MainActivity extends AppCompatActivity {
             fragmentTransaction.add(editNameFragment, "");
             fragmentTransaction.commit();
         });
+
+
     }
 
     private void init() {
@@ -114,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
         mSearchView = findViewById(R.id.a_main_search_view);
         mMainMenuButton = findViewById(R.id.a_main_menu);
         mNavigationView = findViewById(R.id.a_main_navigation_view);
+        mToolbar = findViewById(R.id.a_main_tool_bar);
 
         // Tab
         mTabLayout = findViewById(R.id.a_main_tab);
@@ -139,7 +147,6 @@ public class MainActivity extends AppCompatActivity {
         mProfileName = mHeaderMenu.findViewById(R.id.header_menu_name);
 
         // Drawer items
-        mCreateGroup = R.id.m_drawer_create_group;
         mContacts = R.id.m_drawer_contacts;
         mSettings = R.id.m_drawer_settings;
         mAbout = R.id.m_drawer_about;

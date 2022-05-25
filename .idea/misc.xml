@@ -38,9 +38,16 @@
         <entry key="..\:/Users/stud/AndroidStudioProjects/MessengerProject/app/src/main/res/drawable/backgroud_send_button.xml" value="0.2985" />
         <entry key="..\:/Users/stud/AndroidStudioProjects/MessengerProject/app/src/main/res/drawable/background_message.xml" value="0.2395" />
         <entry key="..\:/Users/stud/AndroidStudioProjects/MessengerProject/app/src/main/res/drawable/inset_message_background.xml" value="0.2695" />
+        <entry key="..\:/Users/stud/AndroidStudioProjects/MessengerProject/app/src/main/res/layout/activity_add_conversation.xml" value="0.1" />
         <entry key="..\:/Users/stud/AndroidStudioProjects/MessengerProject/app/src/main/res/layout/activity_conversation.xml" value="0.33" />
+        <entry key="..\:/Users/stud/AndroidStudioProjects/MessengerProject/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Users/stud/AndroidStudioProjects/MessengerProject/app/src/main/res/layout/fragment_add_conversation.xml" value="0.25277777777777777" />
+        <entry key="..\:/Users/stud/AndroidStudioProjects/MessengerProject/app/src/main/res/layout/item_contact_item.xml" value="0.29322916666666665" />
         <entry key="..\:/Users/stud/AndroidStudioProjects/MessengerProject/app/src/main/res/layout/item_message.xml" value="0.5" />
+        <entry key="..\:/Users/stud/AndroidStudioProjects/MessengerProject/app/src/main/res/menu/menu_add_conversaiton.xml" value="0.28125" />
         <entry key="..\:/Users/stud/AndroidStudioProjects/MessengerProject/app/src/main/res/menu/menu_conversation.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/stud/AndroidStudioProjects/MessengerProject/app/src/main/res/menu/menu_drawer.xml" value="0.25277777777777777" />
+        <entry key="..\:/Users/stud/AndroidStudioProjects/MessengerProject/app/src/main/res/menu/menu_main.xml" value="0.25277777777777777" />
         <entry key="..\:/android/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1915" />
         <entry key="..\:/android/app/src/main/res/layout/activity_auth.xml" value="0.2708333333333333" />
         <entry key="..\:/android/app/src/main/res/layout/activity_main.xml" value="0.25" />
