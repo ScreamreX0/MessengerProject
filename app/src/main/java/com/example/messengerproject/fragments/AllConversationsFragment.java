@@ -11,10 +11,13 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.messengerproject.ConversationsHelper;
+import com.example.messengerproject.Items;
 import com.example.messengerproject.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
 
 public class AllConversationsFragment extends Fragment implements ConversationsHelper.IConversationsFragment{
     // Firebase
@@ -25,6 +28,8 @@ public class AllConversationsFragment extends Fragment implements ConversationsH
 
     // Elements
     RecyclerView conversationsRecycleView;
+
+    ArrayList<Items.Conversation> conversations;
 
     @Nullable
     @Override
@@ -44,6 +49,7 @@ public class AllConversationsFragment extends Fragment implements ConversationsH
 
     @Override
     public void init(View view) {
+        conversations = new ArrayList<>();
         userPhoneNumber = firebaseAuth.getCurrentUser().getPhoneNumber();
 
         conversationsRecycleView = view.findViewById(R.id.f_all_conversations_recycle_view);
@@ -63,9 +69,8 @@ public class AllConversationsFragment extends Fragment implements ConversationsH
     // Вывод списка диалогов
     @Override
     public void displayConversations() {
-
-
         new ConversationsHelper(getContext(),
+                conversations,
                 conversationsRecycleView,
                 userConversationsReference,
                 conversationsReference,

@@ -29,7 +29,6 @@ import com.google.firebase.database.FirebaseDatabase;
 public class MainActivity extends AppCompatActivity {
 
     private static final String DEBUG_CODE = "Main";
-    private ActionBarDrawerToggle drawerToggle;
     public static final int NICKNAME_MAX_SIZE = 20;
 
     // Firebase
@@ -65,8 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
         init();
 
-        mFirebaseDatabase
-                .getReference("Users/" + mAuth.getCurrentUser().getPhoneNumber() + "/Name")
+        mFirebaseDatabase.getReference("Users/" + mAuth.getCurrentUser().getPhoneNumber() + "/Name")
                 .get()
                 .addOnSuccessListener(runnable -> {
                     if (runnable == null || runnable.getValue().toString().equals("")) {

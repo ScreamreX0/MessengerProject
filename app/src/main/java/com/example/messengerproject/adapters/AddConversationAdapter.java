@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,10 +19,10 @@ import java.util.ArrayList;
 import java.util.zip.Inflater;
 
 public class AddConversationAdapter extends RecyclerView.Adapter<AddConversationAdapter.ContactViewHolder> {
-    ArrayList<Items.Contact> contacts;
+    public ArrayList<Items.Contact> contacts;
     Context context;
 
-    public AddConversationAdapter(ArrayList<Items.Contact> contacts, Context context) {
+    public AddConversationAdapter(Context context, ArrayList<Items.Contact> contacts) {
         this.contacts = contacts;
         this.context = context;
     }
@@ -36,7 +37,11 @@ public class AddConversationAdapter extends RecyclerView.Adapter<AddConversation
 
     @Override
     public void onBindViewHolder(@NonNull ContactViewHolder holder, int position) {
+        holder.mName.setText(contacts.get(position).getPhoneNumber());
 
+        holder.mCheckBox.setOnClickListener(view -> {
+            contacts.get(position).setSelected(holder.mCheckBox.isChecked());
+        });
     }
 
     @Override
@@ -46,10 +51,13 @@ public class AddConversationAdapter extends RecyclerView.Adapter<AddConversation
 
     public class ContactViewHolder extends RecyclerView.ViewHolder {
         TextView mName;
+        CheckBox mCheckBox;
+
         public ContactViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            TextView mName = itemView.findViewById(R.id.i_contact_name);
+            mName = itemView.findViewById(R.id.i_contact_name);
+            mCheckBox = itemView.findViewById(R.id.i_contact_check);
         }
     }
 }

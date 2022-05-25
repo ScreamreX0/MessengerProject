@@ -51,21 +51,46 @@
         android:id="@+id/a_add_conversation_conversation_name"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:hint="Название беседы"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/a_add_conversation_app_bar">
 
     </EditText>
 
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:text="Контакты"
+        android:textSize="18sp"
+        android:layout_marginTop="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/a_add_conversation_conversation_name" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/a_add_conversation_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/a_add_conversation_conversation_name">
-
+        app:layout_constraintTop_toBottomOf="@+id/textView3">
     </androidx.recyclerview.widget.RecyclerView>
+
+    <Button
+        android:id="@+id/a_add_conversation_add_contacts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Добавить контакты"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/a_add_conversation_recycler_view"
+        app:layout_constraintStart_toStartOf="@+id/a_add_conversation_recycler_view"
+        app:layout_constraintTop_toTopOf="@+id/a_add_conversation_recycler_view" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

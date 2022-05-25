@@ -124,10 +124,15 @@ public class Items {
     public static class Contact {
         String phoneNumber;
         String name;
+        boolean isSelected = false;
 
         public Contact(String phoneNumber, String name) {
             this.phoneNumber = phoneNumber;
             this.name = name;
+        }
+
+        public Contact(String phoneNumber) {
+            this.phoneNumber = phoneNumber;
         }
 
         public String getPhoneNumber() {
@@ -136,6 +141,14 @@ public class Items {
 
         public String getName() {
             return name;
+        }
+
+        public boolean isSelected() {
+            return this.isSelected;
+        }
+
+        public void setSelected(boolean selected) {
+            isSelected = selected;
         }
     }
 }

@@ -18,7 +18,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 public class AuthActivity extends AppCompatActivity {
@@ -27,6 +30,8 @@ public class AuthActivity extends AppCompatActivity {
     private Button mGetCodeButton;
     private EditText mCodeTextView;
     private Button mSendCodeButton;
+    private static final String TEST_PHONE_NUMBER = "+79274304921";
+    private static String phoneNumber;
 
     // Firebase
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -45,34 +50,35 @@ public class AuthActivity extends AppCompatActivity {
         // TODO: Убрать на проде
         authWithTestPhoneNumber();
 
-        // Получение настроек
-        mCallBack = getCallBack();
-
-        // Слушатель нажатия на кнопку получения кода
-        mGetCodeButton.setOnClickListener(v -> {
-            // Метод для отправки кода верификации
-            sendVerificationCode(mPhoneNumberTextView.getText().toString());
-        });
-
-        // Метод для отправки проверочного кода
-        mSendCodeButton.setOnClickListener(v -> {
-            if (userId == null) {
-                // Пользователь не отправлял код на свой номер телефона
-                return;
-            }
-
-            if (mCodeTextView.getText().toString().length() < 6) {
-                // Пользователь ввел меньше 6 символов кода
-                Log.d(DEBUG_CODE, "\nError:" + "Неверный код");
-                Toast.makeText(AuthActivity.this, "Неверный код", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            // Код который ввел пользователь
-            String code = mCodeTextView.getText().toString();
-
-            verifyCode(code, userId);
-        });
+//        // Получение настроек
+//        mCallBack = getCallBack();
+//
+//        // Слушатель нажатия на кнопку получения кода
+//        mGetCodeButton.setOnClickListener(v -> {
+//            // Метод для отправки кода верификации
+//            phoneNumber = mPhoneNumberTextView.getText().toString();
+//            sendVerificationCode(phoneNumber);
+//        });
+//
+//        // Метод для отправки проверочного кода
+//        mSendCodeButton.setOnClickListener(v -> {
+//            if (userId == null) {
+//                // Пользователь не отправлял код на свой номер телефона
+//                return;
+//            }
+//
+//            if (mCodeTextView.getText().toString().length() < 6) {
+//                // Пользователь ввел меньше 6 символов кода
+//                Log.d(DEBUG_CODE, "\nError:" + "Неверный код");
+//                Toast.makeText(AuthActivity.this, "Неверный код", Toast.LENGTH_SHORT).show();
+//                return;
+//            }
+//
+//            // Код который ввел пользователь
+//            String code = mCodeTextView.getText().toString();
+//
+//            verifyCode(code, userId);
+//        });
     }
 
     // Метод инициализации
@@ -101,7 +107,6 @@ public class AuthActivity extends AppCompatActivity {
             // Код успешно отправлен
             @Override
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
-                startActivity(new Intent(AuthActivity.this, MainActivity.class));
             }
 
             // Ошибка отправки кода
@@ -135,7 +140,29 @@ public class AuthActivity extends AppCompatActivity {
                 return;
             }
 
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            FirebaseDatabase.getInstance().getReference("Users").get().addOnSuccessListener(runnable1 -> {
+                boolean isExist = false;
+                for (DataSnapshot user : runnable1.getChildren()) {
+                    if (user.getKey().equals(phoneNumber)) {
+                        isExist = true;
+                    }
+                }
+
+                if (!isExist) {
+                    HashMap<String, String> userSettings = new HashMap<>();
+                    userSettings.put("Contacts", "");
+                    userSettings.put("Conversations", "");
+                    userSettings.put("Name", "");
+                    userSettings.put("Role", "user");
+
+                    FirebaseDatabase.getInstance()
+                            .getReference("Users/" + phoneNumber)
+                            .setValue(userSettings);
+                }
+
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            });
+
         });
     }
 
@@ -173,7 +200,27 @@ public class AuthActivity extends AppCompatActivity {
                         return;
                     }
 
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    FirebaseDatabase.getInstance().getReference("Users").get().addOnSuccessListener(runnable1 -> {
+                        boolean isExist = false;
+                        for (DataSnapshot user : runnable1.getChildren()) {
+                            if (user.getKey().equals(TEST_PHONE_NUMBER)) {
+                                isExist = true;
+                            }
+                        }
+
+                        if (!isExist) {
+                            HashMap<String, String> userSettings = new HashMap<>();
+                            userSettings.put("Contacts", "");
+                            userSettings.put("Conversations", "");
+                            userSettings.put("Name", "");
+                            userSettings.put("Role", "user");
+
+                            FirebaseDatabase.getInstance()
+                                    .getReference("Users/" + TEST_PHONE_NUMBER)
+                                    .setValue(userSettings);
+                        }
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    });
                 });
             }
             @Override
@@ -188,12 +235,13 @@ public class AuthActivity extends AppCompatActivity {
         };
 
         PhoneAuthOptions options = PhoneAuthOptions.newBuilder(mAuth)
-                .setPhoneNumber("+79274304923")
+                .setPhoneNumber(TEST_PHONE_NUMBER)
                 .setTimeout(10L, TimeUnit.SECONDS)
                 .setActivity(this)
                 .setCallbacks(callback)
                 .build();
 
         PhoneAuthProvider.verifyPhoneNumber(options);
+
     }
 }

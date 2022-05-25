@@ -57,9 +57,11 @@ public class AddContactFragment extends DialogFragment {
                         .child("Contacts")
                         .getChildren();
 
+                String phoneNumber = mPhoneNumberEditText.getText().toString();
+
                 // Пробежка по всем контактам текущего пользователя и проверка
                 for (DataSnapshot contact : contacts) {
-                    if (contact.getKey().equals(mPhoneNumberEditText.getText().toString())) {
+                    if (contact.getKey().equals(phoneNumber)) {
                         Toast.makeText(inflater.getContext(), "Пользователь уже есть в списке контактов", Toast.LENGTH_LONG).show();
                         return;
                     }
@@ -67,13 +69,11 @@ public class AddContactFragment extends DialogFragment {
 
                 // Пробежка по всем пользователям и проверка на существование
                 for (DataSnapshot user : command.getResult().getChildren()) {
-                    if (user.getKey().equals(mPhoneNumberEditText.getText().toString())) {
-                        HashMap<String, String> contact = new HashMap<>();
-                        contact.put(mPhoneNumberEditText.getText().toString(), "");
-
+                    if (user.getKey().equals(phoneNumber)) {
                         firebaseDatabase.getReference("Users/"
                                 + FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber()
-                                + "/Contacts").setValue(contact);
+                                + "/Contacts/"
+                                + phoneNumber).setValue("");
 
                         dismiss();
                         return;

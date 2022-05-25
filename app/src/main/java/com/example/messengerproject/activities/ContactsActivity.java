@@ -55,7 +55,6 @@ public class ContactsActivity extends AppCompatActivity {
     private ArrayList<Items.Contact> getContacts() {
         ArrayList<Items.Contact> contacts = new ArrayList<>();
 
-
         return contacts;
     }
 }

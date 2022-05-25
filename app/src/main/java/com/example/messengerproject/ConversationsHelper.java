@@ -25,12 +25,18 @@ public class ConversationsHelper {
     DatabaseReference conversationsReference;
     ConversationType conversationType;
 
+    ArrayList<Items.Conversation> conversations;
+
+    ConversationsAdapter conversationsAdapter;
+    RecyclerView conversationsRecyclerView;
+
     public ConversationsHelper(Context context,
-                               RecyclerView conversationsRecycleView,
+                               ArrayList<Items.Conversation> conversations, RecyclerView conversationsRecycleView,
                                DatabaseReference userConversationsReference,
                                DatabaseReference conversationsReference,
                                ConversationType conversationType) {
         this.context = context;
+        this.conversations = conversations;
         this.conversationsRecycleView = conversationsRecycleView;
         this.userConversationsReference = userConversationsReference;
         this.conversationsReference = conversationsReference;
@@ -54,15 +60,19 @@ public class ConversationsHelper {
 
     // Метод для вывода бесед
     public void displayConversations() {
-        ArrayList<Items.Conversation> conversations = new ArrayList<>();
-        ConversationsAdapter conversationsAdapter = new ConversationsAdapter(context, conversations);
-        conversationsRecycleView.setHasFixedSize(true);
-        conversationsRecycleView.setLayoutManager(new LinearLayoutManager(context));
-        conversationsRecycleView.setAdapter(conversationsAdapter);
+        conversationsAdapter = getConversationAdapter();
+        conversationsRecyclerView = getConversationsRecycleView(this.conversationsRecycleView);
 
         userConversationsReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                conversations.clear();
+
+                if (snapshot.getChildrenCount() == 0) {
+                    conversationsAdapter.notifyDataSetChanged();
+                    return;
+                }
+
                 conversationsReference.get().addOnSuccessListener(runnable -> {
                     if (!runnable.hasChildren()) {
                         return;
@@ -105,6 +115,18 @@ public class ConversationsHelper {
             return true;
         }
         return false;
+    }
+
+    private ConversationsAdapter getConversationAdapter() {
+        return new ConversationsAdapter(context, conversations);
+    }
+
+    private RecyclerView getConversationsRecycleView(RecyclerView recyclerView) {
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        recyclerView.setAdapter(conversationsAdapter);
+
+        return recyclerView;
     }
 }
 
