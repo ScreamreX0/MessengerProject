@@ -36,7 +36,7 @@ public class AddConversationActivity extends AppCompatActivity {
     private Toolbar mToolBarBack;
     private EditText mConversationNameEditText;
     private RecyclerView mRecyclerView;
-    private Button mAddConversationButton;
+    private Button mAddConversationAddContact;
 
     private ArrayList<Items.Contact> contacts;
 
@@ -74,13 +74,13 @@ public class AddConversationActivity extends AppCompatActivity {
                 }
 
                 setUpConversation(name, selectedContacts);
-                startActivity(new Intent(this, MainActivity.class));
+
                 return false;
             }
             return false;
         });
 
-        mAddConversationButton.setOnClickListener(view -> {
+        mAddConversationAddContact.setOnClickListener(view -> {
             startActivity(new Intent(this, ContactsActivity.class));
         });
     }
@@ -93,7 +93,7 @@ public class AddConversationActivity extends AppCompatActivity {
         mToolBarBack = findViewById(R.id.a_add_conversation_tool_bar_back);
         mConversationNameEditText = findViewById(R.id.a_add_conversation_conversation_name);
         mRecyclerView = findViewById(R.id.a_add_conversation_recycler_view);
-        mAddConversationButton = findViewById(R.id.a_add_conversation_add_contacts);
+        mAddConversationAddContact = findViewById(R.id.a_add_conversation_add_contacts);
 
         // Firebase
         currentUserPhoneNumber = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
@@ -119,9 +119,9 @@ public class AddConversationActivity extends AppCompatActivity {
                 contactsAdapter.notifyDataSetChanged();
 
                 if (contacts.size() == 0) {
-                    mAddConversationButton.setVisibility(View.VISIBLE);
+                    mAddConversationAddContact.setVisibility(View.VISIBLE);
                 } else {
-                    mAddConversationButton.setVisibility(View.GONE);
+                    mAddConversationAddContact.setVisibility(View.GONE);
                 }
             }
 
@@ -145,13 +145,16 @@ public class AddConversationActivity extends AppCompatActivity {
 
     private void setUpConversation(String name, ArrayList<Items.Contact> contacts) {
         usersReference.get().addOnSuccessListener(runnable -> {
+            Items.Contact conversationCreator = new Items.Contact(currentUserPhoneNumber);
+
             // Создание беседы и ее настройка
             HashMap<String, Object> settings = new HashMap<>();
-
             HashMap<String, Object> members = new HashMap<>();
             for (Items.Contact contact : contacts) {
                 members.put(contact.getPhoneNumber(), "user");
             }
+
+            members.put(conversationCreator.getPhoneNumber(), "admin");
 
             settings.put("Members", members);
             settings.put("Messages", "");
@@ -161,7 +164,6 @@ public class AddConversationActivity extends AppCompatActivity {
             pushedConversationReference.setValue(settings);
 
             // Настройка админа
-            Items.Contact conversationCreator = new Items.Contact(currentUserPhoneNumber);
             usersReference.child(conversationCreator.getPhoneNumber())
                     .child("Conversations")
                     .child(pushedConversationReference.getKey())
@@ -182,6 +184,8 @@ public class AddConversationActivity extends AppCompatActivity {
                     }
                 }
             }
+
+            startActivity(new Intent(this, MainActivity.class));
         });
     }
 }

@@ -5,23 +5,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.messengerproject.ConversationsHelper;
 import com.example.messengerproject.Items;
 import com.example.messengerproject.MessagesHelper;
 import com.example.messengerproject.R;
 import com.example.messengerproject.adapters.ConversationsAdapter;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -31,8 +31,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
-public class ConversationActivity extends AppCompatActivity {
-    private static final String DEBUG_CODE = "ConversationActivity";
+public class ConversationUserActivity extends AppCompatActivity {
+    private static final String DEBUG_CODE = "ConversationUserActivity";
     private String conversationId;  // id диалога в базе
     private String conversationName;
     private ArrayList<Items.Message> messages;  // Список сообщений
@@ -52,11 +52,12 @@ public class ConversationActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     DatabaseReference messagesReference;
+    String currentUserPhoneNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_conversation);
+        setContentView(R.layout.activity_conversation_user);
 
         init();
 
@@ -65,10 +66,6 @@ public class ConversationActivity extends AppCompatActivity {
         setSupportActionBar(mToolBar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-
-
-        ((TextView)mToolBar.findViewById(R.id.a_conversation_conversation_name)).setText(conversationName);
 
         mSendButton.setOnClickListener(view -> {
             String text = mMessageEditText.getText().toString();
@@ -98,33 +95,34 @@ public class ConversationActivity extends AppCompatActivity {
         conversationName = getIntent().getExtras().getString(ConversationsAdapter.CONVERSATION_NAME_KEY);
         messagesReference = FirebaseDatabase.getInstance()
                 .getReference("Conversations/" + conversationId + "/Messages");
+        currentUserPhoneNumber = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
 
         // Elements
-        mAppBar = findViewById(R.id.a_conversation_app_bar);
-        mToolBar = findViewById(R.id.a_conversation_tool_bar);
-        mIcon = findViewById(R.id.a_conversation_icon);
-        mName = findViewById(R.id.a_conversation_conversation_name);
-        mMessagesRecycleView = findViewById(R.id.a_conversation_recycle_view);
-        mMessageEditText = findViewById(R.id.a_conversation_edit_text);
-        mSendButton = findViewById(R.id.a_conversation_send_button);
-        mEditButton = findViewById(R.id.a_conversation_edit_button);
+        mAppBar = findViewById(R.id.a_conversation_user_app_bar);
+        mToolBar = findViewById(R.id.a_conversation_user_tool_bar);
+        mIcon = findViewById(R.id.a_conversation_user_icon);
+        mName = findViewById(R.id.a_conversation_user_name);
+        mMessagesRecycleView = findViewById(R.id.a_conversation_user_recycle_view);
+        mMessageEditText = findViewById(R.id.a_conversation_user_edit_text);
+        mSendButton = findViewById(R.id.a_conversation_user_send_button);
+        mEditButton = findViewById(R.id.a_conversation_user_edit_button);
+
+        mName.setText(conversationName);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_conversation, menu);
+        getMenuInflater().inflate(R.menu.menu_conversation_user, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.m_conversation_clear) {
-            messagesReference.setValue("");
-        } else if (item.getItemId() == R.id.m_conversation_exit) {
-
-        } else if (item.getItemId() == R.id.m_conversation_delete) {
+        if (item.getItemId() == R.id.m_conversation_user_exit) {
+            exitFromConversation();
+        } else if (item.getItemId() == R.id.m_conversation_user_delete) {
             deleteSelectedMessages();
-        } else if (item.getItemId() == R.id.m_conversation_edit) {
+        } else if (item.getItemId() == R.id.m_conversation_user_edit) {
             editSelectedMessage();
         }
         return super.onOptionsItemSelected(item);
@@ -137,6 +135,37 @@ public class ConversationActivity extends AppCompatActivity {
                 messagesReference,
                 messages,
                 mToolBar).displayMessages();
+    }
+
+    // Метод для выхода из беседы
+    private void exitFromConversation() {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+
+        databaseReference.get().addOnSuccessListener(runnable -> {
+            if (runnable.child("Users")
+                    .child(currentUserPhoneNumber)
+                    .child("Conversations")
+                    .getChildrenCount() == 1) {
+                databaseReference.child("Users")
+                        .child(currentUserPhoneNumber)
+                        .child("Conversations")
+                        .setValue("");
+            } else {
+                databaseReference.child("Users")
+                        .child(currentUserPhoneNumber)
+                        .child("Conversations")
+                        .child(conversationId)
+                        .removeValue();
+            }
+
+            databaseReference.child("Conversations")
+                    .child(conversationId)
+                    .child("Members")
+                    .child(currentUserPhoneNumber)
+                    .removeValue();
+
+            startActivity(new Intent(this, MainActivity.class));
+        });
     }
 
     // Метод для удаления всех выделенных сообщений

@@ -36,10 +36,6 @@ public class AllConversationsFragment extends Fragment implements ConversationsH
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_all_conversations, container, false);
 
-        if (!checkForUserAuth(firebaseAuth)) {
-            return view;
-        }
-
         init(view);
 
         displayConversations();
@@ -58,12 +54,6 @@ public class AllConversationsFragment extends Fragment implements ConversationsH
                 .getReference("Conversations");
         userConversationsReference = FirebaseDatabase.getInstance()
                 .getReference("Users/" + userPhoneNumber + "/Conversations");
-    }
-
-    // Проверка на авторизацию пользователя
-    @Override
-    public boolean checkForUserAuth(FirebaseAuth firebaseAuth) {
-        return firebaseAuth.getCurrentUser() != null;
     }
 
     // Вывод списка диалогов

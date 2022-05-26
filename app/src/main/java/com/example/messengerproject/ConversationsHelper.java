@@ -8,27 +8,26 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.messengerproject.adapters.ConversationsAdapter;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class ConversationsHelper {
     Context context;
-    RecyclerView conversationsRecycleView;
+    ConversationType conversationType;
+    ArrayList<Items.Conversation> conversations;
+    ConversationsAdapter conversationsAdapter;
+
+    // Elements
+    RecyclerView conversationsRecyclerView;
+
+    // Firebase
     DatabaseReference userConversationsReference;
     DatabaseReference conversationsReference;
-    ConversationType conversationType;
-
-    ArrayList<Items.Conversation> conversations;
-
-    ConversationsAdapter conversationsAdapter;
-    RecyclerView conversationsRecyclerView;
 
     public ConversationsHelper(Context context,
                                ArrayList<Items.Conversation> conversations, RecyclerView conversationsRecycleView,
@@ -37,31 +36,16 @@ public class ConversationsHelper {
                                ConversationType conversationType) {
         this.context = context;
         this.conversations = conversations;
-        this.conversationsRecycleView = conversationsRecycleView;
+        this.conversationsRecyclerView = conversationsRecycleView;
         this.userConversationsReference = userConversationsReference;
         this.conversationsReference = conversationsReference;
         this.conversationType = conversationType;
     }
 
-    // Тип беседы
-    public enum ConversationType {
-        anyType,  // 1 - ..
-        personal,  // 1
-        dialog,  // 2
-        group  // 3 - ..
-    }
-
-    // Интерфейс для бесед
-    public interface IConversationsFragment {
-        void init(View view);
-        boolean checkForUserAuth(FirebaseAuth firebaseAuth);
-        void displayConversations();
-    }
-
     // Метод для вывода бесед
     public void displayConversations() {
         conversationsAdapter = getConversationAdapter();
-        conversationsRecyclerView = getConversationsRecycleView(this.conversationsRecycleView);
+        conversationsRecyclerView = getConversationsRecycleView(this.conversationsRecyclerView);
 
         userConversationsReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -79,17 +63,11 @@ public class ConversationsHelper {
                     }
 
                     for (DataSnapshot userConversationSnapshot : snapshot.getChildren()) {
-                        for (DataSnapshot conversationSnapshot : runnable.getChildren()) {
-                            if (userConversationSnapshot.getKey().equals(conversationSnapshot.getKey())) {
-                                if (checkConversation(conversationType, conversationSnapshot)) {
-                                    conversations.add(new Items.Conversation(
-                                            conversationSnapshot.getKey(),
-                                            conversationSnapshot.child("Name").getValue().toString()));
-                                }
-                            }
+                        DataSnapshot conversation = runnable.child(userConversationSnapshot.getKey());
+                        if (checkConversation(conversationType, conversation.child("Members"))) {
+                            addConversationToArray(conversation);
                         }
                     }
-
                     conversationsAdapter.notifyDataSetChanged();
                 });
             }
@@ -98,6 +76,10 @@ public class ConversationsHelper {
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
+    }
+
+    private ConversationsAdapter getConversationAdapter() {
+        return new ConversationsAdapter(context, conversations);
     }
 
     // Метод для проверки типа беседы
@@ -117,16 +99,57 @@ public class ConversationsHelper {
         return false;
     }
 
-    private ConversationsAdapter getConversationAdapter() {
-        return new ConversationsAdapter(context, conversations);
-    }
-
     private RecyclerView getConversationsRecycleView(RecyclerView recyclerView) {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setAdapter(conversationsAdapter);
 
         return recyclerView;
+    }
+
+    private DataSnapshot getLastElement(Iterable<DataSnapshot> iterable) {
+        Iterator<DataSnapshot> iterator = iterable.iterator();
+        DataSnapshot lastSnapshot = iterator.next();
+        while (iterator.hasNext()) {
+            lastSnapshot = iterator.next();
+        }
+
+        return lastSnapshot;
+    }
+
+    private void addConversationToArray(DataSnapshot conversationSnapshot) {
+        Iterable<DataSnapshot> messages = conversationSnapshot
+                .child("Messages").getChildren();
+        long messagesCount = conversationSnapshot.child("Messages").getChildrenCount();
+
+        String lastMessage = "";
+        String lastMessageTime = "";
+        if (messagesCount > 0) {
+            DataSnapshot lastMessageSnapshot = getLastElement(messages);
+            lastMessage = lastMessageSnapshot.child("Message").getValue().toString();
+            lastMessageTime = lastMessageSnapshot.child("Time").getValue().toString();
+        }
+
+        conversations.add(new Items.Conversation(
+                conversationSnapshot.getKey(),
+                conversationSnapshot.child("Name").getValue().toString(),
+                lastMessage,
+                lastMessageTime,
+                conversationType));
+    }
+
+    // Тип беседы
+    public enum ConversationType {
+        anyType,  // 1 - ..
+        personal,  // 1
+        dialog,  // 2
+        group  // 3 - ..
+    }
+
+    // Интерфейс для бесед
+    public interface IConversationsFragment {
+        void init(View view);
+        void displayConversations();
     }
 }
 

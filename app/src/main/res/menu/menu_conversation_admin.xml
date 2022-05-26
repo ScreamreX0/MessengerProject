@@ -2,24 +2,25 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/m_conversation_edit"
+        android:id="@+id/m_conversation_admin_edit"
         android:title=""
         android:icon="@drawable/ic_baseline_edit_24"
         android:iconTint="@color/white"
         app:showAsAction="ifRoom"
         android:visible="false"/>
     <item
-        android:id="@+id/m_conversation_delete"
+        android:id="@+id/m_conversation_admin_delete"
         android:title=""
         android:icon="@drawable/ic_baseline_delete_24"
         android:iconTint="@color/white"
         app:showAsAction="ifRoom"
         android:visible="false"/>
 
-    <item android:id="@+id/m_conversation_clear"
+    <item android:id="@+id/m_conversation_admin_clear"
         android:title="Очистить историю"
         android:icon="@drawable/ic_baseline_clear_24" />
-    <item android:id="@+id/m_conversation_exit"
-        android:title="Покинуть группу"
-        android:icon="@drawable/ic_baseline_exit_to_app_24"/>
+
+    <item android:id="@+id/m_conversation_admin_delete_conversation"
+        android:title="Удалить беседу"
+        android:icon="@drawable/ic_baseline_clear_24" />
 </menu>

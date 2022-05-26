@@ -4,40 +4,45 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.messengerproject.Items;
 import com.example.messengerproject.R;
+import com.example.messengerproject.fragments.DeleteContactFragment;
 
 import java.util.ArrayList;
 
-public class AddConversationAdapter extends RecyclerView.Adapter<AddConversationAdapter.ContactViewHolder> {
-    public ArrayList<Items.Contact> contacts;
+public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ContactViewHolder> {
     Context context;
+    ArrayList<Items.Contact> contacts;
+    FragmentManager fragmentManager;
 
-    public AddConversationAdapter(Context context, ArrayList<Items.Contact> contacts) {
-        this.contacts = contacts;
+    public ContactsAdapter(Context context, ArrayList<Items.Contact> contacts, FragmentManager fragmentManager) {
         this.context = context;
+        this.contacts = contacts;
+        this.fragmentManager = fragmentManager;
     }
 
     @NonNull
     @Override
     public ContactViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_contact_with_check, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_contact, parent, false);
 
         return new ContactViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ContactViewHolder holder, int position) {
-        holder.mName.setText(contacts.get(position).getPhoneNumber());
+        holder.phoneNumber.setText(contacts.get(position).getPhoneNumber());
 
-        holder.mCheckBox.setOnClickListener(view -> {
-            contacts.get(position).setSelected(holder.mCheckBox.isChecked());
+        holder.itemView.setOnLongClickListener(view -> {
+            new DeleteContactFragment(contacts.get(position).getPhoneNumber()).show(fragmentManager, "");
+
+            return false;
         });
     }
 
@@ -47,14 +52,15 @@ public class AddConversationAdapter extends RecyclerView.Adapter<AddConversation
     }
 
     public class ContactViewHolder extends RecyclerView.ViewHolder {
-        TextView mName;
-        CheckBox mCheckBox;
-
+        TextView phoneNumber;
         public ContactViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            mName = itemView.findViewById(R.id.i_contact_with_check_name);
-            mCheckBox = itemView.findViewById(R.id.i_contact_check);
+            init();
+        }
+
+        private void init() {
+            phoneNumber = itemView.findViewById(R.id.i_contact_name);
         }
     }
 }

@@ -8,13 +8,21 @@ public class Items {
     public static class Conversation {
         String id;
         String name;
-        ArrayList<DialogMember> members;
-        ArrayList<Message> messages;
+        String lastMessage;
+        String lastMessageTime;
         ConversationsHelper.ConversationType conversationType;
 
         public Conversation(String id, String name) {
             this.id = id;
             this.name = name;
+        }
+
+        public Conversation(String id, String name, String lastMessage, String lastMessageTime, ConversationsHelper.ConversationType conversationType) {
+            this.id = id;
+            this.name = name;
+            this.lastMessage = lastMessage;
+            this.lastMessageTime = lastMessageTime;
+            this.conversationType = conversationType;
         }
 
         public ConversationsHelper.ConversationType getConversationType() {
@@ -33,12 +41,12 @@ public class Items {
             return name;
         }
 
-        public ArrayList<DialogMember> getMembers() {
-            return members;
+        public String getLastMessage() {
+            return lastMessage;
         }
 
-        public ArrayList<Message> getMessages() {
-            return messages;
+        public String getLastMessageTime() {
+            return lastMessageTime;
         }
     }
     public static class DialogMember {
