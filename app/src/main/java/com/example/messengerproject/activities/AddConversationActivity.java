@@ -14,11 +14,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.messengerproject.Variables;
 import com.example.messengerproject.Items;
 import com.example.messengerproject.R;
 import com.example.messengerproject.adapters.AddConversationAdapter;
 import com.google.android.material.appbar.AppBarLayout;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class AddConversationActivity extends AppCompatActivity {
+    private ArrayList<Items.Contact> contacts;
+
     // Elements
     private AppBarLayout mAppBar;
     private SearchView mSearchView;
@@ -38,13 +40,10 @@ public class AddConversationActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private Button mAddConversationAddContact;
 
-    private ArrayList<Items.Contact> contacts;
-
     // Firebase
     private DatabaseReference contactsReference;
     private DatabaseReference conversationsReference;
     private DatabaseReference usersReference;
-    private String currentUserPhoneNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +72,7 @@ public class AddConversationActivity extends AppCompatActivity {
                     return false;
                 }
 
-                setUpConversation(name, selectedContacts);
+                createConversation(name, selectedContacts);
 
                 return false;
             }
@@ -96,13 +95,13 @@ public class AddConversationActivity extends AppCompatActivity {
         mAddConversationAddContact = findViewById(R.id.a_add_conversation_add_contacts);
 
         // Firebase
-        currentUserPhoneNumber = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
         contacts = new ArrayList<>();
-        contactsReference = FirebaseDatabase.getInstance().getReference("Users/" + currentUserPhoneNumber + "/Contacts");
+        contactsReference = FirebaseDatabase.getInstance().getReference("Users/" + Variables.currentUserPhoneNumber + "/Contacts");
         conversationsReference = FirebaseDatabase.getInstance().getReference("Conversations");
         usersReference = FirebaseDatabase.getInstance().getReference("Users");
     }
 
+    // Метод для вывода контактов в списке
     private void displayContacts() {
         AddConversationAdapter contactsAdapter = new AddConversationAdapter(this, contacts);
         mRecyclerView.setHasFixedSize(true);
@@ -132,6 +131,7 @@ public class AddConversationActivity extends AppCompatActivity {
         });
     }
 
+    // Метод для получения списка выделенных контактов
     private ArrayList<Items.Contact> getSelectedContacts() {
         ArrayList<Items.Contact> selectedContacts = new ArrayList<>();
         for (Items.Contact contact : contacts) {
@@ -143,9 +143,10 @@ public class AddConversationActivity extends AppCompatActivity {
         return selectedContacts;
     }
 
-    private void setUpConversation(String name, ArrayList<Items.Contact> contacts) {
+    // Метод для создания беседы
+    private void createConversation(String name, ArrayList<Items.Contact> contacts) {
         usersReference.get().addOnSuccessListener(runnable -> {
-            Items.Contact conversationCreator = new Items.Contact(currentUserPhoneNumber);
+            Items.Contact conversationCreator = new Items.Contact(Variables.currentUserPhoneNumber);
 
             // Создание беседы и ее настройка
             HashMap<String, Object> settings = new HashMap<>();
